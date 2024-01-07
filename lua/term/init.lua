@@ -8,16 +8,14 @@ local function set_keymaps(win)
   vim.keymap.set(
     { "n", "v", "i", "t" },
     "C-<leader>",
-    handler,
+    win:toggle,
     opts
   )
 end
 
 M.setup = function(opts)
   local term = Term:new()
-
   term:start(opts.shell or "bash")
-
   set_keymaps(term.win)
 end
 
