@@ -13,7 +13,9 @@ M.setup = function(opts)
   vim.keymap.set(
     { "n", "v", "i", "t" },
     "<C-Space>",
-    term:toggle,
+    function()
+      term:toggle()
+    end,
     opts
   )
 end
