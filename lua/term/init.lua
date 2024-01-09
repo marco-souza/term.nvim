@@ -2,25 +2,40 @@ local Term = require("term.term")
 
 local M = {}
 
+local default_options = {
+  shell = "bash",
+  mappings = {
+    toggle_terminal = "<C-Space>",
+    quit_term_mode = "<C-x>"
+  },
+}
+
+-- TODO: handle multiple terminals
 M.setup = function(opts)
   local term = Term:new()
-  term:start(opts.shell or "bash")
+  local options = vim.tbl_deep_extend(
+    "force",
+    default_options,
+    opts or {},
+  )
 
-  local opts = { noremap = true, silent = true }
+  -- start terminal
+  term:start(options.shell or "bash")
 
-  -- open term
+  -- toggle terminal
   vim.keymap.set(
     { "n", "v", "i", "t" },
-    "<C-Space>",
-    function()
-      term:toggle()
-    end,
-    opts
+    options.mappings.toggle_terminal,
+    term:toggle,
+    { noremap = true, silent = true },
   )
 
   -- exit term mode
   vim.keymap.set(
-    { "t" }, "<C-x>", "<C-\\><C-n>", opts
+    { "t" }, 
+    options.mappings.quit_term_mode,
+    "<C-\\><C-n>",
+    { noremap = true, silent = true },
   )
 end
 
