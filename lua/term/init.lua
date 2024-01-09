@@ -24,7 +24,7 @@ M.setup = function(opts)
 
   -- toggle terminal
   vim.keymap.set(
-    { "n", "v", "i", "t" },
+    { "n", "v", "t" },
     options.mappings.toggle_terminal,
     function()
       term:toggle()
