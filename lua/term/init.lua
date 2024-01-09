@@ -16,7 +16,7 @@ M.setup = function(opts)
   local options = vim.tbl_deep_extend(
     "force",
     default_options,
-    opts or {},
+    opts or {}
   )
 
   -- start terminal
@@ -26,16 +26,18 @@ M.setup = function(opts)
   vim.keymap.set(
     { "n", "v", "i", "t" },
     options.mappings.toggle_terminal,
-    term:toggle,
-    { noremap = true, silent = true },
+    function()
+      term:toggle()
+    end,
+    { noremap = true, silent = true }
   )
 
   -- exit term mode
   vim.keymap.set(
-    { "t" }, 
+    { "t" },
     options.mappings.quit_term_mode,
     "<C-\\><C-n>",
-    { noremap = true, silent = true },
+    { noremap = true, silent = true }
   )
 end
 
