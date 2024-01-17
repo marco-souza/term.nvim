@@ -24,8 +24,10 @@ function Term:start(cmd)
   self.win:hide()
 end
 
-function Term:toggle()
-  self.win:toggle()
+---@param code string
+---@return string
+function Term:termcode(code)
+  return vim.api.nvim_replace_termcodes(code, true, false, true)
 end
 
 return Term
