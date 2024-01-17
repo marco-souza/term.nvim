@@ -30,4 +30,18 @@ function Term:termcode(code)
   return vim.api.nvim_replace_termcodes(code, true, false, true)
 end
 
+---@param input string
+function Term:send(input)
+  if not vim.api.nvim_buf_is_valid(self.win.buf) then
+    return
+  end
+
+  if self.win:is_buf_hidden() then
+    self.win:show()
+  end
+
+  vim.api.nvim_chan_send(vim.bo.channel, input .. self:termcode("<CR>"))
+  self.win:hide()
+end
+
 return Term
