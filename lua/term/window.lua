@@ -1,18 +1,17 @@
 local Window = {}
 
 function Window:new(opts)
-  local obj = {}
+  local default_options = {
+    win = nil,
+    margin = 20,
+    title = opts.title or "New window",
+    buf = vim.api.nvim_create_buf(false, true),
+  }
+
+  local obj = vim.tbl_deep_extend("force", default_options, opts or {})
 
   setmetatable(obj, self)
   self.__index = self
-
-  opts = opts or {}
-
-  obj.win = nil
-  obj.margin = 20
-  obj.title = opts.title or "New window"
-  obj.buf = vim.api.nvim_create_buf(false, true)
-
   return obj
 end
 

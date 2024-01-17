@@ -6,31 +6,22 @@ local default_options = {
   shell = "bash",
   mappings = {
     toggle_terminal = "<C-Space>",
-    quit_term_mode = "<C-x>"
+    quit_term_mode = "<C-x>",
   },
 }
 
 -- TODO: handle multiple terminals
 M.setup = function(opts)
   local term = Term:new()
-  local options = vim.tbl_deep_extend(
-    "force",
-    default_options,
-    opts or {}
-  )
+  local options = vim.tbl_deep_extend("force", default_options, opts or {})
 
   -- start terminal
-  term:start(options.shell or "bash")
+  term:start(options.shell)
 
   -- toggle terminal
-  vim.keymap.set(
-    { "n", "v", "t" },
-    options.mappings.toggle_terminal,
-    function()
-      term:toggle()
-    end,
-    { noremap = true, silent = true }
-  )
+  vim.keymap.set({ "n", "v", "t" }, options.mappings.toggle_terminal, function()
+    term:toggle()
+  end, { noremap = true, silent = true })
 
   -- exit term mode
   vim.keymap.set(

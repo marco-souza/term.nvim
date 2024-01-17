@@ -2,14 +2,17 @@ local Window = require("term.window")
 
 local Term = {}
 
-function Term:new()
-  local obj = {}
+function Term:new(opts)
+  local default_options = {
+    title = "Terminal",
+  }
+
+  local obj = vim.tbl_deep_extend("force", default_options, opts or {})
+  -- add window
+  obj.win = Window:new({ title = obj.title })
 
   setmetatable(obj, self)
   self.__index = self
-
-  obj.win = Window:new({ title = "Terminal" })
-
   return obj
 end
 
