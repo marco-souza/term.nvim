@@ -51,7 +51,7 @@ function M.show(opts)
   })
 
   -- insert mode
-  vim.cmd("startinsert")
+  vim.cmd.startinsert()
 end
 
 return M
