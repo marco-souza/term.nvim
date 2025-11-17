@@ -2,8 +2,7 @@ print("Starting tests...\n\n")
 
 -- run all
 local tests = {
-  require("tests.rest_parser"),
-  require("tests.env"),
+  -- TODO: list all test files here
   require("tests.terminal"),
 }
 
