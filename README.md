@@ -3,8 +3,9 @@
 <div>
   <h4 align="center">
     <a href="#dependencies">Dependencies</a> ·
+    <a href="#installation">Installation</a> ·
     <a href="#usage">Usage</a> ·
-    <a href="#features">Features</a>
+    <a href="#keybindings">Keybindings</a>
   </h4>
 </div>
 
@@ -34,14 +35,16 @@
 
 A Neovim plugin for managing multiple terminal sessions with an interactive dashboard. Run, monitor, and control multiple terminal instances directly from your editor.
 
-### Features
+## Features
 
 - Manage multiple terminal sessions simultaneously
 - Interactive dashboard with dual-pane layout
-- Left panel: List of open terminal sessions (20%)
-- Right panel: Active terminal display (80%)
-- Execute commands with `:Term <cmd>`
+  - Left panel: Terminal session list with status indicator (20% width)
+  - Right panel: Active terminal display with full terminal emulation (80% width)
+- Commands: `:Term <cmd>`, `:Term`, `:Term list`, `:Term open`
 - Create, switch, and close terminal sessions
+- Rename sessions and navigate between them
+- Sessions persist after dashboard closure
 - Seamless integration with `nui.nvim` and `plenary.nvim`
 
 ## Dependencies
@@ -74,40 +77,88 @@ Install with your preferred package manager:
 
 The plugin provides the following commands:
 
-- `:Term <cmd>` - Open a terminal with the specified command
-- `:Term` - Open the terminal manager dashboard
-- `:Term list` - List all open terminal sessions
-- `:Term close` - Close the current terminal session
-
-### Dashboard Navigation
-
-Once you have the dashboard open:
-
-1. **Left Panel**: View all open terminal sessions
-   - Select a terminal to switch between sessions
-   - See session name and status
-
-2. **Right Panel**: Interact with the active terminal
-   - Full terminal emulation support
-   - Execute commands within the session
-
-3. **Keybindings**:
-   - `<C-l>` / `<C-h>` - Switch focus between panels
-   - `j/k` - Navigate terminal list (left panel)
-   - `<CR>` - Select terminal session
-   - `d` - Delete/close terminal session
-   - `n` - Create new terminal session
-   - `q` - Close dashboard
+- `:Term <cmd>` - Create and open a terminal with the specified command
+- `:Term` - Open the dashboard with all active sessions
+- `:Term open` - Open the dashboard with the last active session
+- `:Term list` - List all active terminal sessions in a notification
 
 ### Examples
 
 ```vim
-:Term npm start      " Opens a new terminal running npm start
-:Term python script.py
-:Term               " Opens the terminal manager dashboard
-:Term list          " Shows list of active sessions
-:Term close         " Closes current session
+:Term npm start           " Creates and displays a new terminal running npm start
+:Term python script.py    " Creates a terminal running a Python script
+:Term                     " Opens the dashboard with all active sessions
+:Term open                " Opens the dashboard with the last active session
+:Term list                " Shows list of all active terminals
 ```
+
+## Dashboard Navigation
+
+Once the dashboard is open, you have a dual-pane interface:
+
+**Left Panel - Session List**
+- Shows all active terminal sessions
+- `*` marker indicates the currently active session
+- Displays useful keybindings reference
+
+**Right Panel - Terminal**
+- Full terminal emulation
+- All keyboard input is forwarded to the terminal
+- Terminal persists when dashboard is closed
+
+### Keybindings
+
+#### Global (both panels)
+| Key | Action |
+|-----|--------|
+| `q` | Close dashboard (sessions continue running) |
+
+#### Session Navigation (all modes)
+| Key | Action |
+|-----|--------|
+| `<S-j>` | Switch to next session |
+| `<S-k>` | Switch to previous session |
+| `<S-c>` | Create a new terminal session |
+| `<S-r>` | Rename current session |
+| `<S-x>` | Delete current session |
+
+#### Terminal Mode
+- All keys are forwarded to the active terminal
+- Navigation shortcuts still work while in terminal
+
+## Configuration
+
+Setup with default options:
+
+```lua
+require("term").setup({
+  margin = 2  -- Margin around the dashboard (default: 2)
+})
+```
+
+## Architecture
+
+The plugin is organized as follows:
+
+```
+lua/term/
+├── init.lua           # Plugin entry point
+├── cmd.lua            # Command definitions and routing
+├── types.lua          # Type definitions
+├── ui/
+│   └── dashboard.lua  # Dashboard UI (nui.nvim layout)
+└── utils/
+    └── terminal.lua   # Terminal session management
+```
+
+### Session Lifecycle
+
+1. **Create**: Use `:Term <cmd>` to spawn a new session
+2. **Manage**: Sessions are tracked independently and can be switched via dashboard
+3. **Persist**: Sessions continue running even after dashboard is closed with `q`
+4. **Close**: Delete sessions with `<S-x>` or by exiting the terminal
+
+All sessions are stored in memory and persist for the current Neovim session.
 
 ## License
 
