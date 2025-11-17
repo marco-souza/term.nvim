@@ -65,6 +65,13 @@ lua/
   -- lua/term/types.lua
   ---@class TermOptions
   ---@field margin number: Margin size in characters (default: 2)
+  ---@field width number: Dashboard width in characters (default: 120)
+  ---@field height number: Dashboard height in lines (default: 30)
+  ---@field border string: Border style (default: "rounded")
+  ---@field default_shell string: Default shell command (default: $SHELL or "/bin/bash")
+  ---@field auto_focus_terminal boolean: Auto-enter terminal mode (default: true)
+  ---@field session_list_width string|number: Session list panel width (default: "20%")
+  ---@field terminal_width string|number: Terminal panel width (default: "80%")
   
   -- Usage in other files:
   ---@param opts TermOptions
@@ -103,7 +110,7 @@ make pr-ready       # Format + lint (ready for PR)
 ## Plugin Architecture
 
 ### Initialization Flow
-1. User runs `:Term <cmd>` or `:Term`
+1. User runs `:Term` (open dashboard) or `:Term <cmd>` (create terminal)
 2. `cmd.lua` routes to appropriate handler
 3. `terminal.lua` manages session state
 4. `dashboard.lua` renders UI with nui.nvim

@@ -5,6 +5,13 @@ local terminal_manager = require("term.utils.terminal")
 
 local _defaults = {
   margin = 2,
+  width = 120,
+  height = 30,
+  border = "rounded",
+  default_shell = vim.env.SHELL or "/bin/bash",
+  auto_focus_terminal = true,
+  session_list_width = "20%",
+  terminal_width = "80%",
 }
 
 local _config = vim.tbl_deep_extend("force", {}, _defaults)
@@ -24,22 +31,9 @@ local function setup(opts)
       local active = terminal_manager.get_active()
       if not active then
         -- Create new session with shell if none exist
-        local shell = vim.env.SHELL or "/bin/bash"
-        terminal_manager.create(shell)
+        terminal_manager.create(_config.default_shell)
       end
-      term.toggle({ margin = _config.margin })
-    elseif subcmd == "open" then
-      -- Open last active session or create new one
-      local active = terminal_manager.get_active()
-      if not active then
-        -- Create new session with shell if none exist
-        local shell = vim.env.SHELL or "/bin/bash"
-        active = terminal_manager.create(shell)
-        vim.notify('Created new terminal: "' .. shell .. '"', vim.log.levels.INFO)
-      else
-        vim.notify('Opened terminal: "' .. active.cmd .. '"', vim.log.levels.INFO)
-      end
-      term.toggle({ margin = _config.margin })
+      term.toggle(_config)
     elseif subcmd == "list" then
       -- List all sessions
       local sessions = terminal_manager.list()
@@ -60,7 +54,7 @@ local function setup(opts)
       local session = terminal_manager.create(cmd)
       if session then
         vim.notify('Created terminal: "' .. cmd .. '"', vim.log.levels.INFO)
-        term.toggle({ margin = _config.margin })
+        term.toggle(_config)
       else
         vim.notify("Failed to create terminal", vim.log.levels.ERROR)
       end
@@ -68,7 +62,7 @@ local function setup(opts)
   end, {
     nargs = "*",
     complete = function()
-      return { "open", "list" }
+      return { "list" }
     end,
   })
 end

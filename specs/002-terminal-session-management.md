@@ -178,8 +178,8 @@ And their output is preserved
 
 **Command Routing (`cmd.lua`):**
 - Route `:Term <cmd>` to `session_manager.create(cmd)`
-- Route `:Term` to `dashboard.toggle()`
-- Support `:Term list`, `:Term close`, `:Term switch`
+- Route `:Term` (no args) to `dashboard.toggle()`
+- Support `:Term list` to list all sessions
 
 ### Testing Strategy
 - Unit tests for session manager (create, list, switch, close)

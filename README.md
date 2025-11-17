@@ -41,7 +41,7 @@ A Neovim plugin for managing multiple terminal sessions with an interactive dash
 - Interactive dashboard with dual-pane layout
   - Left panel: Terminal session list with status indicator (20% width)
   - Right panel: Active terminal display with full terminal emulation (80% width)
-- Commands: `:Term <cmd>`, `:Term`, `:Term list`, `:Term open`
+- Commands: `:Term <cmd>`, `:Term`, `:Term list`
 - Create, switch, and close terminal sessions
 - Rename sessions and navigate between them
 - Sessions persist after dashboard closure
@@ -79,7 +79,6 @@ The plugin provides the following commands:
 
 - `:Term <cmd>` - Create and open a terminal with the specified command
 - `:Term` - Open the dashboard with all active sessions
-- `:Term open` - Open the dashboard with the last active session
 - `:Term list` - List all active terminal sessions in a notification
 
 ### Examples
@@ -88,7 +87,6 @@ The plugin provides the following commands:
 :Term npm start           " Creates and displays a new terminal running npm start
 :Term python script.py    " Creates a terminal running a Python script
 :Term                     " Opens the dashboard with all active sessions
-:Term open                " Opens the dashboard with the last active session
 :Term list                " Shows list of all active terminals
 ```
 
@@ -132,7 +130,14 @@ Setup with default options:
 
 ```lua
 require("term").setup({
-  margin = 2  -- Margin around the dashboard (default: 2)
+  margin = 2,                    -- Margin around dashboard (default: 2)
+  width = 120,                   -- Dashboard width in characters (default: 120)
+  height = 30,                   -- Dashboard height in lines (default: 30)
+  border = "rounded",            -- Border style: "rounded", "solid", "double", "dashed", "dotted" (default: "rounded")
+  default_shell = "/bin/bash",   -- Default shell command (default: $SHELL or "/bin/bash")
+  auto_focus_terminal = true,    -- Auto-enter terminal mode on open (default: true)
+  session_list_width = "20%",    -- Session list panel width (default: "20%")
+  terminal_width = "80%",        -- Terminal panel width (default: "80%")
 })
 ```
 

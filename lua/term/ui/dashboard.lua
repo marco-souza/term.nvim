@@ -7,8 +7,14 @@ local event = require("nui.utils.autocmd").event
 local terminal_manager = require("term.utils.terminal")
 
 local _defaults = {
+  margin = 2,
   width = 120,
   height = 30,
+  border = "rounded",
+  default_shell = vim.env.SHELL or "/bin/bash",
+  auto_focus_terminal = true,
+  session_list_width = "20%",
+  terminal_width = "80%",
 }
 
 local _state = {
@@ -65,12 +71,12 @@ end
 local function toggle(opts)
   opts = vim.tbl_deep_extend("force", _defaults, opts or {})
 
-  -- Left panel: session list (20%)
+  -- Left panel: session list
   local left_panel = Popup({
     enter = true,
     focusable = true,
     border = {
-      style = "rounded",
+      style = opts.border,
       padding = { 0, 1 },
     },
     win_options = {
@@ -82,12 +88,12 @@ local function toggle(opts)
     },
   })
 
-  -- Right panel: terminal (80%)
+  -- Right panel: terminal
   local right_panel = Popup({
     enter = false,
     focusable = true,
     border = {
-      style = "rounded",
+      style = opts.border,
       padding = { 0, 1 },
     },
     win_options = {
@@ -99,7 +105,7 @@ local function toggle(opts)
     },
   })
 
-  -- Create layout with 20%/80% split
+  -- Create layout with configurable split
   local layout = Layout(
     {
       relative = "editor",
@@ -110,8 +116,8 @@ local function toggle(opts)
       },
     },
     Layout.Box({
-      Layout.Box(left_panel, { size = "20%" }),
-      Layout.Box(right_panel, { size = "80%" }),
+      Layout.Box(left_panel, { size = opts.session_list_width }),
+      Layout.Box(right_panel, { size = opts.terminal_width }),
     }, { dir = "row" })
   )
 
@@ -138,7 +144,7 @@ local function toggle(opts)
       -- Check if session has a buffer already
       if not session.bufnr or not vim.api.nvim_buf_is_valid(session.bufnr) then
         -- Create new terminal buffer
-        local shell = vim.env.SHELL or "/bin/bash"
+        local shell = opts.default_shell
         local cmd = session.cmd
         local terminal_cmd = shell .. " -c " .. cmd
         session.bufnr = vim.api.nvim_create_buf(false, true)
@@ -160,9 +166,10 @@ local function toggle(opts)
           vim.keymap.set("t", "q", function()
             layout:unmount()
           end, { noremap = true, buffer = true })
+          if opts.auto_focus_terminal then
+            vim.cmd("startinsert")
+          end
         end)
-
-        vim.cmd("startinsert")
       else
         -- Reuse existing buffer
         vim.api.nvim_win_set_buf(winid, session.bufnr)
@@ -178,8 +185,9 @@ local function toggle(opts)
             layout:unmount()
           end, { noremap = true, buffer = true })
           
-          -- Enter terminal mode for reused buffer
-          vim.cmd("startinsert")
+          if opts.auto_focus_terminal then
+            vim.cmd("startinsert")
+          end
         end)
       end
     end
@@ -240,7 +248,7 @@ local function toggle(opts)
       },
     }, {
       prompt = "Command: ",
-      default_value = vim.env.SHELL or "/bin/bash",
+      default_value = opts.default_shell,
       on_submit = function(value)
         if value and value ~= "" then
           local session = terminal_manager.create(value)
@@ -324,8 +332,7 @@ local function toggle(opts)
       initial_session_id = active.id
     else
       -- No existing session, create default shell
-      local shell = vim.env.SHELL or "/bin/bash"
-      local session = terminal_manager.create(shell)
+      local session = terminal_manager.create(opts.default_shell)
       initial_session_id = session and session.id or nil
     end
   end

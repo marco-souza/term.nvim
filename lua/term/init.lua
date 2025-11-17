@@ -4,6 +4,13 @@ local dashboard = require("term.ui.dashboard")
 
 local _defaults = {
   margin = 2,
+  width = 120,
+  height = 30,
+  border = "rounded",
+  default_shell = vim.env.SHELL or "/bin/bash",
+  auto_focus_terminal = true,
+  session_list_width = "20%",
+  terminal_width = "80%",
 }
 
 ---@param opts TermOptions
