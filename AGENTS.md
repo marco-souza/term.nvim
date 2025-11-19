@@ -144,7 +144,7 @@ make pr-ready       # Format + lint (ready for PR)
 
 **Important**: Sessions persist even after the dashboard is closed. Users can:
 
-- Close dashboard with `<S-q>` without terminating sessions
+- Close dashboard by leaving the window (dashboard closes automatically on `WinLeave`)
 - Reopen dashboard later with `:Term` and see all active sessions
 - Sessions continue running in background with their output/state preserved
 
@@ -152,20 +152,22 @@ make pr-ready       # Format + lint (ready for PR)
 
 ### Left Panel (Session List)
 
-- `j/k` - Move up/down
-- `<CR>` - Select session
-- `d` - Delete session
-- `n` - New session
+- `<S-j>` - Next Session
+- `<S-k>` - Previous Session
+- `<S-r>` - Rename Session
+- `<S-x>` - Delete Session
 
 ### Right Panel (Terminal)
 
-- All terminal input passes through
+- `<S-j>` - Next Session
+- `<S-k>` - Previous Session
+- `<S-r>` - Rename Session
+- `<S-x>` - Delete Session
+- All other terminal input passes through
 
 ### Global
 
-- `<C-l>` - Focus right (terminal)
-- `<C-h>` - Focus left (sessions)
-- `<S-q>` - Close dashboard
+- Dashboard closes automatically when you leave it (lose focus)
 
 ## Testing Guidelines
 

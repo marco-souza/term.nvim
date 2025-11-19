@@ -108,21 +108,14 @@ Once the dashboard is open, you have a dual-pane interface:
 
 ### Keybindings
 
-#### Global (both panels)
-
-| Key     | Action                                      |
-| ------- | ------------------------------------------- |
-| `<S-q>` | Close dashboard (sessions continue running) |
-
 #### Session Navigation (all modes)
 
-| Key     | Action                        |
-| ------- | ----------------------------- |
-| `<S-j>` | Switch to next session        |
-| `<S-k>` | Switch to previous session    |
-| `<S-c>` | Create a new terminal session |
-| `<S-r>` | Rename current session        |
-| `<S-x>` | Delete current session        |
+| Key     | Action                     |
+| ------- | -------------------------- |
+| `<S-j>` | Switch to next session     |
+| `<S-k>` | Switch to previous session |
+| `<S-r>` | Rename current session     |
+| `<S-x>` | Delete current session     |
 
 #### Terminal Mode
 
@@ -165,7 +158,7 @@ lua/term/
 
 1. **Create**: Use `:Term <cmd>` to spawn a new session
 2. **Manage**: Sessions are tracked independently and can be switched via dashboard
-3. **Persist**: Sessions continue running even after dashboard is closed with `q`
+3. **Persist**: Sessions continue running even after dashboard is closed (auto-closes on `WinLeave`)
 4. **Close**: Delete sessions with `<S-x>` or by exiting the terminal
 
 All sessions are stored in memory and persist for the current Neovim session.
@@ -173,3 +166,4 @@ All sessions are stored in memory and persist for the current Neovim session.
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
+

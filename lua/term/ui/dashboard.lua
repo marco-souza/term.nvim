@@ -57,10 +57,8 @@ local function _render_sessions(left_panel)
   table.insert(session_lines, "=== Keys ===")
   table.insert(session_lines, "S-j - Next Session")
   table.insert(session_lines, "S-k - Prev Session")
-  table.insert(session_lines, "S-c - Create Terminal")
   table.insert(session_lines, "S-r - Rename Session")
   table.insert(session_lines, "S-x - Delete Session")
-  table.insert(session_lines, "q   - Close Dashboard")
 
   vim.api.nvim_buf_set_lines(left_panel.bufnr, 0, -1, false, session_lines)
 end
@@ -122,7 +120,7 @@ local function toggle(opts)
   layout:mount()
 
   -- Forward declarations for recursive functions
-  local next_session, prev_session, create_new_terminal, rename_session, delete_session, switch_to_session
+  local next_session, prev_session, rename_session, delete_session, switch_to_session
 
   -- Function to switch to a session and display it
   function switch_to_session(session_id)
@@ -170,12 +168,6 @@ local function toggle(opts)
           )
           vim.keymap.set(
             "t",
-            "<S-c>",
-            create_new_terminal,
-            { noremap = true, buffer = true }
-          )
-          vim.keymap.set(
-            "t",
             "<S-r>",
             rename_session,
             { noremap = true, buffer = true }
@@ -186,9 +178,6 @@ local function toggle(opts)
             delete_session,
             { noremap = true, buffer = true }
           )
-          vim.keymap.set("t", "<S-q>", function()
-            layout:unmount()
-          end, { noremap = true, buffer = true })
           if opts.auto_focus_terminal then
             vim.cmd("startinsert")
           end
@@ -213,12 +202,6 @@ local function toggle(opts)
           )
           vim.keymap.set(
             "t",
-            "<S-c>",
-            create_new_terminal,
-            { noremap = true, buffer = true }
-          )
-          vim.keymap.set(
-            "t",
             "<S-r>",
             rename_session,
             { noremap = true, buffer = true }
@@ -229,9 +212,6 @@ local function toggle(opts)
             delete_session,
             { noremap = true, buffer = true }
           )
-          vim.keymap.set("t", "<S-q>", function()
-            layout:unmount()
-          end, { noremap = true, buffer = true })
 
           if opts.auto_focus_terminal then
             vim.cmd("startinsert")
@@ -278,35 +258,6 @@ local function toggle(opts)
     end
     local prev_idx = current_idx > 1 and current_idx - 1 or #_state.session_list
     switch_to_session(_state.session_list[prev_idx].id)
-  end
-
-  function create_new_terminal()
-    local input = Input({
-      position = "50%",
-      size = {
-        width = 50,
-        height = 3,
-      },
-      border = {
-        style = "rounded",
-        padding = { 0, 1 },
-      },
-      win_options = {
-        winhighlight = "Normal:NormalFloat",
-      },
-    }, {
-      prompt = "Command: ",
-      default_value = opts.default_shell,
-      on_submit = function(value)
-        if value and value ~= "" then
-          local session = terminal_manager.create(value)
-          if session then
-            switch_to_session(session.id)
-          end
-        end
-      end,
-    })
-    input:mount()
   end
 
   function rename_session()
@@ -397,14 +348,9 @@ local function toggle(opts)
   if vim.api.nvim_win_is_valid(left_panel.winid) then
     left_panel:map("n", "<S-j>", next_session, { noremap = true })
     left_panel:map("n", "<S-k>", prev_session, { noremap = true })
-    left_panel:map("n", "<S-c>", create_new_terminal, { noremap = true })
     left_panel:map("n", "<S-r>", rename_session, { noremap = true })
     left_panel:map("n", "<S-x>", delete_session, { noremap = true })
   end
-
-  left_panel:map("n", "q", function()
-    layout:unmount()
-  end, { noremap = true })
 
   -- Auto-enter terminal mode when entering terminal buffer
   vim.api.nvim_create_autocmd("BufEnter", {
@@ -417,8 +363,13 @@ local function toggle(opts)
   })
 
   -- Close dashboard when losing focus
-  local close_dashboard = function()
+  local dashboard_group = vim.api.nvim_create_augroup("term_dashboard", {
+    clear = false,
+  })
+
+  local close_if_left = function()
     local current_win = vim.api.nvim_get_current_win()
+    -- Only close if we left both panels (not navigating between them)
     if current_win ~= left_panel.winid and current_win ~= right_panel.winid then
       pcall(function()
         layout:unmount()
@@ -427,12 +378,16 @@ local function toggle(opts)
   end
 
   vim.api.nvim_create_autocmd("WinLeave", {
-    callback = close_dashboard,
-    once = true,
+    group = dashboard_group,
+    callback = close_if_left,
+  })
+
+  vim.api.nvim_create_autocmd("BufLeave", {
+    group = dashboard_group,
+    callback = close_if_left,
   })
 end
 
 M.toggle = toggle
 
 return M
-
