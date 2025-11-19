@@ -95,11 +95,13 @@ The plugin provides the following commands:
 Once the dashboard is open, you have a dual-pane interface:
 
 **Left Panel - Session List**
+
 - Shows all active terminal sessions
 - `*` marker indicates the currently active session
 - Displays useful keybindings reference
 
 **Right Panel - Terminal**
+
 - Full terminal emulation
 - All keyboard input is forwarded to the terminal
 - Terminal persists when dashboard is closed
@@ -107,20 +109,23 @@ Once the dashboard is open, you have a dual-pane interface:
 ### Keybindings
 
 #### Global (both panels)
-| Key | Action |
-|-----|--------|
-| `q` | Close dashboard (sessions continue running) |
+
+| Key     | Action                                      |
+| ------- | ------------------------------------------- |
+| `<S-q>` | Close dashboard (sessions continue running) |
 
 #### Session Navigation (all modes)
-| Key | Action |
-|-----|--------|
-| `<S-j>` | Switch to next session |
-| `<S-k>` | Switch to previous session |
+
+| Key     | Action                        |
+| ------- | ----------------------------- |
+| `<S-j>` | Switch to next session        |
+| `<S-k>` | Switch to previous session    |
 | `<S-c>` | Create a new terminal session |
-| `<S-r>` | Rename current session |
-| `<S-x>` | Delete current session |
+| `<S-r>` | Rename current session        |
+| `<S-x>` | Delete current session        |
 
 #### Terminal Mode
+
 - All keys are forwarded to the active terminal
 - Navigation shortcuts still work while in terminal
 

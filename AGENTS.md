@@ -32,11 +32,13 @@ lua/
 ## Conventions
 
 ### Naming
+
 - Use snake_case for functions and variables
 - Use PascalCase for class-like objects
 - Prefix private functions with underscore: `_internal_function()`
 
 ### Code Style
+
 - Follow `.stylua.toml` formatting rules
 - Run `make lint` before committing
 - Max line length: 80 characters (stylua enforces this)
@@ -45,6 +47,7 @@ lua/
 - Use Lua comments to document types: `---@param name type: description`
 
 ### Default Values
+
 - Always provide sensible defaults in `_defaults` table at module level
 - Merge user options with defaults using `vim.tbl_deep_extend("force", defaults, opts or {})`
 - Example:
@@ -57,10 +60,12 @@ lua/
   ```
 
 ### Type Documentation
+
 - Document function parameters with Lua type comments
 - Format: `---@param param_name param_type: description`
 - Define shared types in `lua/term/types.lua` to avoid repetition
 - Example:
+
   ```lua
   -- lua/term/types.lua
   ---@class TermOptions
@@ -72,7 +77,7 @@ lua/
   ---@field auto_focus_terminal boolean: Auto-enter terminal mode (default: true)
   ---@field session_list_width string|number: Session list panel width (default: "20%")
   ---@field terminal_width string|number: Terminal panel width (default: "80%")
-  
+
   -- Usage in other files:
   ---@param opts TermOptions
   local function toggle(opts)
@@ -80,6 +85,7 @@ lua/
   ```
 
 ### File Organization
+
 - Keep UI code in `ui/` directory
 - Keep utilities in `utils/` directory
 - Keep tests in `tests/` directory matching source structure
@@ -87,6 +93,7 @@ lua/
 ## Common Commands
 
 ### Development
+
 ```bash
 make fmt            # Format code with stylua
 make lint           # Run luacheck linter
@@ -95,6 +102,7 @@ make pr-ready       # Format + lint (ready for PR)
 ```
 
 ### Testing
+
 - Run all tests: `make test`
 - Tests run in headless Neovim: `nvim --headless -c 'lua require("tests")' -c 'qa!'`
 - Add tests in `tests/` directory mirroring source structure
@@ -102,6 +110,7 @@ make pr-ready       # Format + lint (ready for PR)
 - Test utilities separately from UI components
 
 ### Code Formatting & Linting
+
 - **stylua**: Formats Lua code (80 char width, 2-space indent)
 - **luacheck**: Static analysis (allows `vim` global)
 - Run `make fmt` before committing
@@ -110,47 +119,53 @@ make pr-ready       # Format + lint (ready for PR)
 ## Plugin Architecture
 
 ### Initialization Flow
+
 1. User runs `:Term` (open dashboard) or `:Term <cmd>` (create terminal)
 2. `cmd.lua` routes to appropriate handler
 3. `terminal.lua` manages session state
 4. `dashboard.lua` renders UI with nui.nvim
 
 ### Dashboard Layout
+
 - **Left Panel (20%)**: Terminal session list
   - Shows all active sessions
   - Highlights current active session
   - Navigation with j/k, selection with Enter
-  
 - **Right Panel (80%)**: Active terminal display
   - Full terminal emulation
   - Receives keyboard input
   - Shows real-time output
 
 ### Terminal Session Lifecycle
+
 1. Create: `:Term <cmd>` spawns new session
 2. Switch: Select from left panel
 3. Close: Delete key or `:Term close`
 
 **Important**: Sessions persist even after the dashboard is closed. Users can:
-- Close dashboard with `q` without terminating sessions
+
+- Close dashboard with `<S-q>` without terminating sessions
 - Reopen dashboard later with `:Term` and see all active sessions
 - Sessions continue running in background with their output/state preserved
 
 ## Keybindings
 
 ### Left Panel (Session List)
+
 - `j/k` - Move up/down
 - `<CR>` - Select session
 - `d` - Delete session
 - `n` - New session
 
 ### Right Panel (Terminal)
+
 - All terminal input passes through
 
 ### Global
+
 - `<C-l>` - Focus right (terminal)
 - `<C-h>` - Focus left (sessions)
-- `q` - Close dashboard
+- `<S-q>` - Close dashboard
 
 ## Testing Guidelines
 
@@ -162,6 +177,7 @@ make pr-ready       # Format + lint (ready for PR)
 ## Dependencies
 
 ### nui.nvim
+
 - **GitHub**: https://github.com/MunifTanjim/nui.nvim
 - **Wiki**: https://github.com/MunifTanjim/nui.nvim/wiki
 - **Docs**: https://github.com/MunifTanjim/nui.nvim#readme
@@ -170,23 +186,22 @@ make pr-ready       # Format + lint (ready for PR)
 - **License**: MIT
 
 Components used in term.nvim:
+
 - **Split**: Create split windows with relative sizing
   - Docs: https://github.com/MunifTanjim/nui.nvim/wiki/nui.split
   - Use case: Left and right panels for session list and terminal
-  
 - **Layout**: Complex multi-pane layouts with flexible box model
-
   - Docs: https://github.com/MunifTanjim/nui.nvim/wiki/nui.layout
   - Use case: Manage 20% left / 80% right layout
-  
+
 - **Popup**: Floating windows with borders and styling (optional for modals)
   - Docs: https://github.com/MunifTanjim/nui.nvim/wiki/nui.popup
-  
 - **Tree/Menu**: List components for session navigation
   - Docs: https://github.com/MunifTanjim/nui.nvim/wiki/nui.tree
   - Docs: https://github.com/MunifTanjim/nui.nvim/wiki/nui.menu
 
 ### plenary.nvim
+
 - **GitHub**: https://github.com/nvim-lua/plenary.nvim
 - **License**: MIT
 - Features used:
@@ -255,3 +270,4 @@ end)
 - Session renaming
 - Output history/search
 - Custom keybinding configuration
+

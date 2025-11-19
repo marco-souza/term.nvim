@@ -25,7 +25,11 @@ local _state = {
 ---Render the session list in the left panel
 ---@param left_panel any: The left panel popup
 local function _render_sessions(left_panel)
-  if not left_panel or not left_panel.bufnr or not vim.api.nvim_buf_is_valid(left_panel.bufnr) then
+  if
+    not left_panel
+    or not left_panel.bufnr
+    or not vim.api.nvim_buf_is_valid(left_panel.bufnr)
+  then
     return
   end
 
@@ -58,13 +62,7 @@ local function _render_sessions(left_panel)
   table.insert(session_lines, "S-x - Delete Session")
   table.insert(session_lines, "q   - Close Dashboard")
 
-  vim.api.nvim_buf_set_lines(
-    left_panel.bufnr,
-    0,
-    -1,
-    false,
-    session_lines
-  )
+  vim.api.nvim_buf_set_lines(left_panel.bufnr, 0, -1, false, session_lines)
 end
 
 ---@param opts DashboardOptions|nil
@@ -158,12 +156,37 @@ local function toggle(opts)
 
         -- Set keymaps for new terminal buffer
         vim.api.nvim_win_call(winid, function()
-          vim.keymap.set("t", "<S-j>", next_session, { noremap = true, buffer = true })
-          vim.keymap.set("t", "<S-k>", prev_session, { noremap = true, buffer = true })
-          vim.keymap.set("t", "<S-c>", create_new_terminal, { noremap = true, buffer = true })
-          vim.keymap.set("t", "<S-r>", rename_session, { noremap = true, buffer = true })
-          vim.keymap.set("t", "<S-x>", delete_session, { noremap = true, buffer = true })
-          vim.keymap.set("t", "q", function()
+          vim.keymap.set(
+            "t",
+            "<S-j>",
+            next_session,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set(
+            "t",
+            "<S-k>",
+            prev_session,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set(
+            "t",
+            "<S-c>",
+            create_new_terminal,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set(
+            "t",
+            "<S-r>",
+            rename_session,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set(
+            "t",
+            "<S-x>",
+            delete_session,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set("t", "<S-q>", function()
             layout:unmount()
           end, { noremap = true, buffer = true })
           if opts.auto_focus_terminal then
@@ -173,18 +196,43 @@ local function toggle(opts)
       else
         -- Reuse existing buffer
         vim.api.nvim_win_set_buf(winid, session.bufnr)
-        
+
         -- Set keymaps for reused buffer
         vim.api.nvim_win_call(winid, function()
-          vim.keymap.set("t", "<S-j>", next_session, { noremap = true, buffer = true })
-          vim.keymap.set("t", "<S-k>", prev_session, { noremap = true, buffer = true })
-          vim.keymap.set("t", "<S-c>", create_new_terminal, { noremap = true, buffer = true })
-          vim.keymap.set("t", "<S-r>", rename_session, { noremap = true, buffer = true })
-          vim.keymap.set("t", "<S-x>", delete_session, { noremap = true, buffer = true })
-          vim.keymap.set("t", "q", function()
+          vim.keymap.set(
+            "t",
+            "<S-j>",
+            next_session,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set(
+            "t",
+            "<S-k>",
+            prev_session,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set(
+            "t",
+            "<S-c>",
+            create_new_terminal,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set(
+            "t",
+            "<S-r>",
+            rename_session,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set(
+            "t",
+            "<S-x>",
+            delete_session,
+            { noremap = true, buffer = true }
+          )
+          vim.keymap.set("t", "<S-q>", function()
             layout:unmount()
           end, { noremap = true, buffer = true })
-          
+
           if opts.auto_focus_terminal then
             vim.cmd("startinsert")
           end
@@ -387,3 +435,4 @@ end
 M.toggle = toggle
 
 return M
+
