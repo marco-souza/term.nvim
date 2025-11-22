@@ -353,38 +353,21 @@ local function toggle(opts)
   end
 
   -- Auto-enter terminal mode when entering terminal buffer
-  vim.api.nvim_create_autocmd("BufEnter", {
-    buffer = right_panel.bufnr,
+  vim.api.nvim_create_autocmd(event.BufEnter, {
     callback = function()
+      local current_win = vim.api.nvim_get_current_win()
+      if
+        current_win ~= right_panel.winid
+        and current_win ~= left_panel.winid
+      then
+        layout:unmount()
+        return
+      end
+
       if vim.bo.buftype == "terminal" then
         vim.cmd("startinsert")
       end
     end,
-  })
-
-  -- Close dashboard when losing focus
-  local dashboard_group = vim.api.nvim_create_augroup("term_dashboard", {
-    clear = false,
-  })
-
-  local close_if_left = function()
-    local current_win = vim.api.nvim_get_current_win()
-    -- Only close if we left both panels (not navigating between them)
-    if current_win ~= left_panel.winid and current_win ~= right_panel.winid then
-      pcall(function()
-        layout:unmount()
-      end)
-    end
-  end
-
-  vim.api.nvim_create_autocmd("WinLeave", {
-    group = dashboard_group,
-    callback = close_if_left,
-  })
-
-  vim.api.nvim_create_autocmd("BufLeave", {
-    group = dashboard_group,
-    callback = close_if_left,
   })
 end
 
